@@ -17,38 +17,38 @@ public interface GroupMapper {
 	/**
 	 * グループ情報取得
 	 */
-	@Select("SELECT gm.group_id ,u.id as user_id,u.user_name FROM SubmissionManagementSystem.group_member gm "
-			+ "left join SubmissionManagementSystem.user u on u.id = gm.user_id " + "order by gm.group_id;")
+	@Select("SELECT gm.group_id ,u.id as user_id,u.user_name FROM group_member gm "
+			+ "left join user u on u.id = gm.user_id " + "order by gm.group_id;")
 	List<GroupMemberNameDTO> selectAllGroupMemberName();
 
 	/**
 	 * グループのIDと名前の取得
 	 */
 	@Select("SELECT gm.group_id,gn.group_name "
-			+ "FROM SubmissionManagementSystem.group_member gm "
-			+ "left join SubmissionManagementSystem.group_name gn on gn.id = gm.group_id "
-			+ "left join SubmissionManagementSystem.user u on u.id = gm.user_id "
+			+ "FROM group_member gm "
+			+ "left join group_name gn on gn.id = gm.group_id "
+			+ "left join user u on u.id = gm.user_id "
 			+ "group by gm.group_id order by gm.group_id;")
 	List<GroupMemberDTO> selectGroupList();
 
 	/**
 	 * 直前に登録したグループID取得
 	 */
-	@Select("SELECT id FROM SubmissionManagementSystem.Group_Name " 
+	@Select("SELECT id FROM Group_Name " 
 			+ "order by id desc limit 1;")
 	int getLastInsertGroupId();
 
 	/**
 	 * グループ名登録
 	 */
-	@Insert("INSERT INTO SubmissionManagementSystem.group_name (group_name) " 
+	@Insert("INSERT INTO group_name (group_name) " 
 			+ "VALUES ( #{groupName} ) ;")
 	void insertGroupName(String groupName);
 
 	/**
 	 * グループメンバー登録
 	 */
-	@Insert("INSERT INTO SubmissionManagementSystem.group_member (group_id,user_id) " 
+	@Insert("INSERT INTO group_member (group_id,user_id) " 
 			+ "VALUES ( #{groupId} , #{userId} ) ;")
 	void insertGroupMember(int groupId, int userId);
 
