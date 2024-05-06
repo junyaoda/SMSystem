@@ -1,0 +1,42 @@
+services:
+  api:
+    container_name: java
+    ports:
+      - "${APP_HOST_MACHINE_PORT}:8080"
+    build: ./SubmissionManagementSystemAPI
+
+  db:
+    container_name: mysql
+    ports:
+      - "${DB_HOST_MACHINE_PORT}:3306"
+    build: ./SubmissionManagementSystemDB
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}"
+      - "MYSQL_USER=${DB_USER}"
+      - "MYSQL_PASSWORD=${DB_PASSWORD}"
+      - "MYSQL_DATABASE=${DB_DATABASE}"
+      - TZ=Asia/Tokyo
+    volumes:
+      - type: volume
+        source: volume
+        target: /var/lib/mysql
+      - type: bind
+        source: ./SubmissionManagementSystemDB
+        target: /docker-entrypoint-initdb.d
+      - ./SubmissionManagementSystemDB/my.cnf:/etc/mysql/conf.d/my.cnf
+
+  web:
+    container_name: vue
+    build: ./SubmissionManagementSystemWeb
+    ports:
+      - "${WEB_HOST_MACHINE_PORT}:8080"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/usr/src/app
+    command: sh -c "cd SubmissionManagementSystemWeb && npm run serve"
+    tty: true
+
+volumes:
+  volume:
